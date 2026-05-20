@@ -606,8 +606,9 @@ function setColor(v) {
 
 function setBgColor(v) {
   bgColor = v;
-  // Re-apply bg on blank frames
-  showToast('Fond changé – s\'applique aux nouvelles images');
+  fillBgCanvas();           // repeindre le fond immédiatement
+  renderTimeline();         // mettre à jour les miniatures
+  showToast('Fond changé !');
 }
 
 function setSize(v) {
