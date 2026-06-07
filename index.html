@@ -489,7 +489,6 @@ function renderLayerPanel(){
   const list=document.getElementById('layers-list');
   const frame=frames[currentFi];if(!frame)return;
   list.innerHTML='';
-  // Met à jour aussi le titre du panneau
   const titleEl=document.querySelector('.lp-title');if(titleEl)titleEl.textContent=t('layersTitle');
   const memLimitEl=document.querySelector('.mem-limit');if(memLimitEl)memLimitEl.textContent=t('memLimit');
   const memRowSpan=document.querySelector('.mem-row span');if(memRowSpan)memRowSpan.textContent=t('memory');
@@ -558,7 +557,9 @@ function addFrame(){
   const newLayers=curLayers.map(L=>({id:uid(),name:L.name,visible:L.visible,locked:false,opacity:L.opacity,data:mkEmpty()}));
   const ni=currentFi+1;frames.splice(ni,0,{layers:newLayers});
   currentFi=ni;activeLayerIdx=Math.min(activeLayerIdx,newLayers.length-1);
-  loadActiveLayer();compositeToDisplay();renderTimeline();renderLayerPanel();updateCounter();
+  // FIX: drawOnion doit être appelé ici, comme dans goToFrame,
+  // sinon le canvas onion garde l'état de la frame précédente.
+  loadActiveLayer();compositeToDisplay();drawOnion(ni);renderTimeline();renderLayerPanel();updateCounter();
 }
 function deleteFrame(fi,e){
   e.stopPropagation();
@@ -677,7 +678,6 @@ function clearFrame(){pushUndo();actx.clearRect(0,0,CW,CH);saveActiveLayer();com
 //  EXPORT
 // =============================================
 function showExportModal(){
-  // Mettre à jour les textes de la modal avant d'ouvrir
   applyLang();
   openModal('exportModal');
 }
